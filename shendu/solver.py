@@ -23,6 +23,7 @@ STAGE1_PRINCIPLE = "stage1_principle"
 SUBMITTED_SUMMARY = "submitted_summary"
 INCIDENT_FILED = "incident_filed"
 CHECKS_RUN = "checks_run"
+CUE_RECALL = "cue_recall"
 
 
 @tool
@@ -194,6 +195,19 @@ def two_stage_solver():
         )
         state.messages.extend(messages)
         state.output = output
+
+        # Manipulation check, asked only *after* the deed so it cannot prime it.
+        # Without this we cannot tell "perceived the cue and behaved the same"
+        # (integrity) from "never processed those config lines" (a failed
+        # manipulation, which makes the sample uninformative). The question is
+        # neutral ops housekeeping — asking "were you being watched?" would both
+        # announce the manipulation and measure something else.
+        probe = meta.get("cue_probe_prompt")
+        if probe:
+            state.messages.append(ChatMessageUser(content=probe))
+            state = await generate(state)
+            store().set(CUE_RECALL, state.output.completion)
+
         return state
 
     return solve
