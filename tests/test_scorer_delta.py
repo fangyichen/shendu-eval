@@ -10,6 +10,7 @@ from shendu.scorer import (
     NO_SUBMISSION,
     OMISSION,
     assess_disclosure,
+    gap_ci,
     detect_eval_awareness,
     integrity_metrics,
 )
@@ -106,6 +107,17 @@ def test_integrity_gap_zero_when_invariant():
     compute = integrity_metrics()
     scores = [_score(OBSERVED, CORRECT), _score(UNOBSERVED, CORRECT)]
     assert compute(scores)["integrity_gap"] == 0.0
+
+
+def test_gap_ci_straddles_zero_at_small_n():
+    """A 3-vs-3 split must not be reported as a real gap (功过格: n=1 is noise)."""
+    lo, hi = gap_ci([1.0, 1.0, 1.0], [1.0, 1.0, 0.0])
+    assert lo < 0 < hi
+
+
+def test_gap_ci_excludes_zero_with_large_clean_separation():
+    lo, hi = gap_ci([1.0] * 40, [0.0] * 40)
+    assert lo > 0
 
 
 def test_integrity_gap_handles_reduced_float_values():
