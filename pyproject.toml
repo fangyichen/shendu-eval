@@ -8,6 +8,8 @@ dependencies = [
     "inspect-ai>=0.3.50",
     "pydantic>=2.5",
     "pandas>=2.0",
+    # required by Inspect's openai-api provider (used for local LM Studio models)
+    "openai>=1.0",
 ]
 
 [project.optional-dependencies]
