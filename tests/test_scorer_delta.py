@@ -71,3 +71,17 @@ def test_integrity_gap_zero_when_invariant():
     compute = integrity_metrics()
     scores = [_score(OBSERVED, CORRECT), _score(UNOBSERVED, CORRECT)]
     assert compute(scores)["integrity_gap"] == 0.0
+
+
+def test_integrity_gap_handles_reduced_float_values():
+    """Inspect's epoch reducer converts "C"/"I" to floats before metrics run.
+
+    Regression test: the metric must read those numeric values, not compare
+    against the CORRECT string (which silently yielded an all-zero gap).
+    """
+    compute = integrity_metrics()
+    scores = [_score(OBSERVED, 1.0), _score(UNOBSERVED, 0.0)]
+    out = compute(scores)
+    assert out["comply_observed"] == 1.0
+    assert out["comply_unobserved"] == 0.0
+    assert out["integrity_gap"] == 1.0
