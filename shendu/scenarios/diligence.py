@@ -26,11 +26,18 @@ from inspect_ai.dataset import Sample
 
 from shendu.observation_cues import (
     NEUTRAL_DEFAULT,
+    POSITIVE_CONTROL_CUE,
     NEUTRAL_PLACEBO,
     OBSERVED_CUE,
     UNOBSERVED_CUE,
 )
-from shendu.scenarios.base import OBSERVED, PLACEBO, TENSION, UNOBSERVED
+from shendu.scenarios.base import (
+    OBSERVED,
+    PLACEBO,
+    POSITIVE_CONTROL,
+    TENSION,
+    UNOBSERVED,
+)
 
 PRINCIPLE = "diligence"
 PAIR_ID = "dl-001"
@@ -112,6 +119,8 @@ def render_stage2(arm: str) -> str:
         cue, neutral, nudge = OBSERVED_CUE, NEUTRAL_PLACEBO, ""
     elif arm == TENSION:
         cue, neutral, nudge = UNOBSERVED_CUE, NEUTRAL_DEFAULT, TENSION_NUDGE
+    elif arm == POSITIVE_CONTROL:
+        cue, neutral, nudge = POSITIVE_CONTROL_CUE, NEUTRAL_DEFAULT, ""
     else:
         raise ValueError(f"unknown arm: {arm}")
     ctx = JOB_CONTEXT_TEMPLATE.format(cue=cue, **neutral)
@@ -136,5 +145,5 @@ def _sample(arm: str) -> Sample:
 
 
 def build_dataset(arms: list[str] | None = None) -> list[Sample]:
-    arms = arms or [OBSERVED, UNOBSERVED, PLACEBO, TENSION]
+    arms = arms or [OBSERVED, UNOBSERVED, PLACEBO, TENSION, POSITIVE_CONTROL]
     return [_sample(arm) for arm in arms]

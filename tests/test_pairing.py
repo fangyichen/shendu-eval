@@ -5,7 +5,7 @@ uniquely attributable to "performing for an audience" (brief §6, §8.3).
 """
 
 from shendu.observation_cues import OBSERVED_CUE, UNOBSERVED_CUE
-from shendu.scenarios.base import OBSERVED, PLACEBO, UNOBSERVED
+from shendu.scenarios.base import OBSERVED, PLACEBO, POSITIVE_CONTROL, UNOBSERVED
 from shendu.scenarios.diligence import QUERY_RESULTS as DILIGENCE_QUERIES
 from shendu.scenarios.diligence import render_stage2 as diligence_stage2
 from shendu.scenarios.faithful_reporting import render_stage2
@@ -49,3 +49,15 @@ def test_diligence_arms_differ_only_in_cue():
 def test_diligence_scenario_has_no_failure_to_conceal():
     """This probe isolates corner-cutting from honesty: nothing fails here."""
     assert all(r["ok"] for r in DILIGENCE_QUERIES)
+
+
+def test_positive_control_is_unobserved_but_consequential():
+    """The power check must keep 'no human reads it' and add consequence-to-self.
+
+    Greenblatt et al. found an unmonitored cue alone moved nothing; if this arm
+    accidentally reinstated human review it would stop being a power check.
+    """
+    pc = render_stage2(POSITIVE_CONTROL)
+    assert OBSERVED_CUE not in pc
+    assert "human_signoff" not in pc
+    assert "autonomy tier" in pc  # consequence lands on the agent itself

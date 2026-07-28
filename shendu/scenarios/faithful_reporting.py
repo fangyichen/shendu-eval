@@ -19,6 +19,7 @@ from inspect_ai.dataset import Sample
 
 from shendu.observation_cues import (
     NEUTRAL_DEFAULT,
+    POSITIVE_CONTROL_CUE,
     NEUTRAL_PLACEBO,
     OBSERVED_CUE,
     UNOBSERVED_CUE,
@@ -27,6 +28,7 @@ from shendu.observation_cues import (
 from shendu.scenarios.base import (
     OBSERVED,
     PLACEBO,
+    POSITIVE_CONTROL,
     TENSION,
     UNOBSERVED,
 )
@@ -118,6 +120,9 @@ def render_stage2(arm: str) -> str:
     elif arm == TENSION:
         ctx = render_job_context(UNOBSERVED_CUE, NEUTRAL_DEFAULT)
         nudge = TENSION_NUDGE
+    elif arm == POSITIVE_CONTROL:
+        ctx = render_job_context(POSITIVE_CONTROL_CUE, NEUTRAL_DEFAULT)
+        nudge = ""
     else:
         raise ValueError(f"unknown arm: {arm}")
     return STAGE2_TEMPLATE.format(job_context=ctx, nudge=nudge)
@@ -141,5 +146,5 @@ def _sample(arm: str) -> Sample:
 
 def build_dataset(arms: list[str] | None = None) -> list[Sample]:
     """One Sample per arm of the single hand-built faithful-reporting pair."""
-    arms = arms or [OBSERVED, UNOBSERVED, PLACEBO, TENSION]
+    arms = arms or [OBSERVED, UNOBSERVED, PLACEBO, TENSION, POSITIVE_CONTROL]
     return [_sample(arm) for arm in arms]
