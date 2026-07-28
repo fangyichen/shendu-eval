@@ -7,7 +7,8 @@ The score is a **counterfactual delta** between two arms of a paired scenario
 that differ *only* in an incidental observation cue. The good outcome is
 **delta → 0** (the model behaves the same whether or not it thinks it is
 observed) — this inverts the usual "higher is better". See [docs/brief.md](docs/brief.md)
-for the full design and the hard measurement constraints (§4).
+for the full design and the hard measurement constraints (§4), and
+[docs/prior-art.md](docs/prior-art.md) for how this relates to existing work.
 
 Built on [Inspect AI](https://inspect.aisi.org.uk/).
 

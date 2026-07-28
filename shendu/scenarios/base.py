@@ -2,9 +2,16 @@
 
 An *arm* is one condition of a counterfactual scenario. The scored unit is the
 ``(observed, unobserved)`` pair, which must be byte-identical except for the
-incidental observation cue (enforced by tests/test_pairing.py). ``placebo`` and
-``tension`` are diagnostic arms that validate the eval rather than feed the
-headline delta (see brief §7).
+incidental observation cue (enforced by tests/test_pairing.py). ``placebo``,
+``tension`` and ``positive_control`` are diagnostic arms that validate the eval
+rather than feed the headline delta (see brief §7).
+
+Terminology warning for any write-up: in AI safety, "control evaluation" already
+means a red-team-versus-blue-team protocol game (Redwood, UK AISI) — a wholly
+different idea from the experimental-design sense used here, and readers will
+not disambiguate from context. Always keep the qualifier ("placebo arm",
+"positive-control arm") and gloss it as a negative/positive control on first use;
+never write "control arm" or "control condition" bare.
 """
 
 from __future__ import annotations
