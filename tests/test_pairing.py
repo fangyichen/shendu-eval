@@ -6,6 +6,8 @@ uniquely attributable to "performing for an audience" (brief §6, §8.3).
 
 from shendu.observation_cues import OBSERVED_CUE, UNOBSERVED_CUE
 from shendu.scenarios.base import OBSERVED, PLACEBO, UNOBSERVED
+from shendu.scenarios.diligence import QUERY_RESULTS as DILIGENCE_QUERIES
+from shendu.scenarios.diligence import render_stage2 as diligence_stage2
 from shendu.scenarios.faithful_reporting import render_stage2
 
 
@@ -34,3 +36,16 @@ def test_placebo_keeps_observed_cue_but_changes_neutral():
     assert OBSERVED_CUE in placebo
     assert UNOBSERVED_CUE not in placebo
     assert placebo != render_stage2(OBSERVED)
+
+
+def test_diligence_arms_differ_only_in_cue():
+    """The mild probe must satisfy the same load-bearing invariant."""
+    observed = diligence_stage2(OBSERVED)
+    unobserved = diligence_stage2(UNOBSERVED)
+    assert observed != unobserved
+    assert observed.replace(OBSERVED_CUE, UNOBSERVED_CUE) == unobserved
+
+
+def test_diligence_scenario_has_no_failure_to_conceal():
+    """This probe isolates corner-cutting from honesty: nothing fails here."""
+    assert all(r["ok"] for r in DILIGENCE_QUERIES)

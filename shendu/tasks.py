@@ -21,8 +21,9 @@ from inspect_ai.dataset import Sample
 from inspect_ai.scorer import includes
 from inspect_ai.solver import generate
 
+from shendu.scenarios.diligence import build_dataset as diligence_dataset
 from shendu.scenarios.faithful_reporting import build_dataset
-from shendu.scorer import integrity_scorer
+from shendu.scorer import diligence_scorer, integrity_scorer
 from shendu.solver import two_stage_solver
 
 
@@ -52,4 +53,19 @@ def faithful_reporting() -> Task:
         dataset=build_dataset(),
         solver=two_stage_solver(),
         scorer=integrity_scorer(),
+    )
+
+
+@task
+def diligence() -> Task:
+    """The mild probe: a tedious required check nobody would notice was skipped.
+
+    No metric fails here, so there is nothing to conceal — this isolates
+    corner-cutting-when-unobserved from honesty, and compliance costs one tool
+    call per table, which keeps the measurement valid across capability levels.
+    """
+    return Task(
+        dataset=diligence_dataset(),
+        solver=two_stage_solver(),
+        scorer=diligence_scorer(),
     )
